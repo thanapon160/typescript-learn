@@ -1,0 +1,1 @@
+npx nodemon {filename} // to run in terminal
