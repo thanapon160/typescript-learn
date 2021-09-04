@@ -218,8 +218,7 @@ function setBookField<K extends keyof Book, V extends Book[K]>(
 }
 setBookField("id", "ddd");
 
-// Common helper type
-// Record Type : map key ไปหา value
+// Record: Utility Type - map key ไปหา value
 const angles: Record<string, string> = {
   'gfdgdf': "first",
 };
@@ -253,3 +252,43 @@ type ARresult = `-${KA}`;
 type BookButton = {
   [P in keyof Book]: [Book[P], number];
 };
+
+// Partial: Utility Type
+interface LanguageCode {
+  en_US: string
+  de_DE: string
+}
+type OptionalLangaugeCode = Partial<LanguageCode>
+const langCodeMap: Partial<LanguageCode> = {
+en_US: 'fdsfdsfdsfd'
+}
+
+type Partial2<T> = {
+  [P in keyof T]?: T[P]
+}
+
+type ACC = Partial2<Book>
+
+// Readonly: Utility Type - map ค่าทุกตัว และ type เป็น readonly
+type Props = {
+  readonly book: {title:string}
+}
+type Readyonly2<T> = {
+   readonly [P in keyof T]: T[P]
+}
+type ACC2 = Readonly<Book>
+
+// Pick: Utility Type
+type PartialBook = Pick<Book, 'id'>
+
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P]
+}
+
+// Exclude
+type LuckyNumbers = 44 | 112 | 50
+
+type LuckyNumbersWithout112 = Exclude<LuckyNumbers, 112>
+
+// Extract
+type BC = Extract<LuckyNumbers, 112 | 44>
