@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node learn.ts",
-    "node": "nodemon learn.ts",
+    "nodemon": "nodemon learn.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
