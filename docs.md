@@ -1,6 +1,10 @@
 # Type Guard ควรใช้เมื่อ return type ไม่เคลียร์
 
-# Record Type
+# Generic type
+1.ใช้เมื่อต้องการบีบค่า type ให้แคบลง
+
+# Utility Type
+## Record Type
 type Record<K extends keyof any, T> = {
     [P in K]: T;
 };
@@ -10,7 +14,6 @@ type Record<K extends keyof any, T> = {
 >  **[P in K]: V;**
 >};
 
-# Utility Type
 ## Partial
 เหมือน Record type แต่ไม่จำเป็นต้องใส่ค่า ไม่เกิด error
 
@@ -29,3 +32,12 @@ remove from Union
 
 ## Extract >>> Unions type only
 Include these from Union
+
+# typecheck in typescript
+type CheckType<T> = T extends string ? 'is string' : T extends number ? 'is number' : T extends [infer Head, ...infer Last] ? ['is array', Head, Last] : 'nope'
+type ResultA = CheckType<'hello'>
+type ResultB = CheckType<50>
+type ResultC = CheckType<[50, 40, 30, 20]>
+
+<Advance Tips>
+1. refactor ก่อนแล้วค่อย generic

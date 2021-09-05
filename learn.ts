@@ -220,7 +220,7 @@ setBookField("id", "ddd");
 
 // Record: Utility Type - map key ไปหา value
 const angles: Record<string, string> = {
-  'gfdgdf': "first",
+  gfdgdf: "first",
 };
 console.log(angles);
 
@@ -238,12 +238,14 @@ type Record2<K extends string, V> = {
   [P in K]: V;
 };
 
-type K2= Record2<Statuses, number>
+type K2 = Record2<Statuses, Book>;
+const k3: K2 = {
+  active: { id: "hello", isbn: "world" },
+  pending: { id: "hello", isbn: "world" },
+};
 
 // Map over types => Mapped Type
 type Statuses = "active" | "pending";
-
-
 
 type A2C = { a: 1; b: 2 };
 type KA = keyof A2C;
@@ -255,40 +257,120 @@ type BookButton = {
 
 // Partial: Utility Type
 interface LanguageCode {
-  en_US: string
-  de_DE: string
+  en_US: string;
+  de_DE: string;
 }
-type OptionalLangaugeCode = Partial<LanguageCode>
+type OptionalLangaugeCode = Partial<LanguageCode>;
 const langCodeMap: Partial<LanguageCode> = {
-en_US: 'fdsfdsfdsfd'
-}
+  en_US: "fdsfdsfdsfd",
+};
 
 type Partial2<T> = {
-  [P in keyof T]?: T[P]
-}
+  [P in keyof T]?: T[P];
+};
 
-type ACC = Partial2<Book>
+type ACC = Partial2<Book>;
 
 // Readonly: Utility Type - map ค่าทุกตัว และ type เป็น readonly
 type Props = {
-  readonly book: {title:string}
-}
+  readonly book: { title: string };
+};
 type Readyonly2<T> = {
-   readonly [P in keyof T]: T[P]
-}
-type ACC2 = Readonly<Book>
+  readonly [P in keyof T]: T[P];
+};
+type ACC2 = Readonly<Book>;
 
 // Pick: Utility Type
-type PartialBook = Pick<Book, 'id'>
+type PartialBook = Pick<Book, "id">;
 
 type Pick<T, K extends keyof T> = {
-  [P in K]: T[P]
-}
+  [P in K]: T[P];
+};
 
 // Exclude
-type LuckyNumbers = 44 | 112 | 50
+type LuckyNumbers = 44 | 112 | 50;
 
-type LuckyNumbersWithout112 = Exclude<LuckyNumbers, 112>
+type LuckyNumbersWithout112 = Exclude<LuckyNumbers, 112>;
 
 // Extract
-type BC = Extract<LuckyNumbers, 112 | 44>
+type BC = Extract<LuckyNumbers, 112 | 44>;
+
+//if T is stirng -> is string
+// if T is number -> is number
+type CheckType<T> = T extends string
+  ? string
+  : T extends number
+  ? "is number"
+  : T extends [infer Head, ...infer Last]
+  ? ["is array", Head, Last]
+  : "nope";
+type ResultA = CheckType<"hello">;
+type ResultB = CheckType<50>;
+type ResultC = CheckType<[50, 40, 30, 20]>;
+
+// Example
+type Input = {
+  title: {
+    type: "string";
+  };
+  age: {
+    type: "number";
+  };
+};
+type Schema = {
+  title: {
+    type: "string";
+  };
+  age: {
+    type: "number";
+  };
+  memberIds: {
+    type: "array";
+    value: {
+      type: "number";
+    };
+  };
+};
+
+type Output = {
+  title: string;
+  age: number;
+};
+
+type Res = {
+  [K in keyof Input]: Input[K]["type"];
+};
+
+type testtype = Res["age"];
+
+interface TypeMapper {
+  string: string;
+  number: number;
+  memberIds: [10, 20];
+}
+type Scalar = keyof TypeMapper;
+
+type Res2 = {
+  [K in keyof Input]: TypeMapper[Input[K]["type"]];
+};
+
+type ToMappedOutput<T> = {
+  [K in keyof T]: T[K] extends { type: keyof TypeMapper }
+    ? TypeMapper[T[K]["type"]]
+    : never;
+};
+type ToMappedOutput2<T extends Record<string, { type: keyof TypeMapper }>> = {
+  [K in keyof T]: TypeMapper[T[K]["type"]];
+};
+
+type MapScalar<T> = T extends { type: Scalar}
+  ? TypeMapper[T['type']] : never
+
+type ToMappedOutput3<T> = {
+  [K in keyof T] : T[K] extends { type: "array", value: infer Value }
+      ? MapScalar<Value>[]
+      : T[K] extends { type: Scalar}
+        ? MapScalar<T[K]>
+        : never
+};
+type result2 = ToMappedOutput3<Schema>;
